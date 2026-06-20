@@ -1,22 +1,19 @@
 import axios from "axios";
 
-console.log("ENV API URL:", import.meta.env.VITE_API_URL);
-console.log("BASE URL:", import.meta.env.VITE_API_URL);
+const API_URL = "https://taskmanagner-devflow.onrender.com/api/auth";
 
-const api = axios.create({
-  baseURL: "https://taskmanagner-devflow.onrender.com/api",
-  withCredentials: true,
-});
+export const authApi = {
+  login: async (email: string, password: string) => {
+    const res = await axios.post(`${API_URL}/login`, { email, password });
+    return res.data;
+  },
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("devflow_token");
-
-  if (token) {
-    config.headers = config.headers ?? {};   // ✅ FIX ADDED
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
-
-export default api;
+  register: async (name: string, email: string, password: string) => {
+    const res = await axios.post(`${API_URL}/register`, {
+      name,
+      email,
+      password,
+    });
+    return res.data;
+  },
+};
