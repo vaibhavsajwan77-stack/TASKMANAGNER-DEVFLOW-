@@ -49,31 +49,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = async (email: string, password: string) => {
     const data = await authApi.login(email.trim(), password.trim());
 
-    // FIX: authApi.ts confirms backend returns { token, user }
-    // No accessToken fallback needed — using exact key from AuthResponse type
-    const receivedToken = data?.token;
-    const receivedUser = data?.user;
-
-    if (!receivedToken || !receivedUser) {
+    if (!data?.token || !data?.user) {
       throw new Error('Invalid login response from server');
     }
 
-    saveSession(receivedToken, receivedUser);
+    saveSession(data.token, data.user);
   };
 
   const register = async (name: string, email: string, password: string) => {
     const data = await authApi.register(name.trim(), email.trim(), password.trim());
 
-    // FIX: authApi.ts confirms backend returns { token, user }
-    // No accessToken fallback needed — using exact key from AuthResponse type
-    const receivedToken = data?.token;
-    const receivedUser = data?.user;
-
-    if (!receivedToken || !receivedUser) {
+    if (!data?.token || !data?.user) {
       throw new Error('Invalid register response from server');
     }
 
-    saveSession(receivedToken, receivedUser);
+    saveSession(data.token, data.user);
   };
 
   const logout = () => {
@@ -104,5 +94,4 @@ export const useAuth = (): AuthContextType => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within AuthProvider');
   return ctx;
-
 };
